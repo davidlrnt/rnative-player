@@ -10,6 +10,7 @@ import {
   Text,
   Animated,
   TouchableOpacity,
+  TouchableHighlight,
   AppRegistry,
   View,
 } from 'react-native';
@@ -20,19 +21,78 @@ import TextInput from '../components/TextInput';
 const {width, height} = require('Dimensions').get('window');
 
 const styles = StyleSheet.create({
-  cube: {
-    // marginLeft: 25,
-    marginTop: 10,
-    width: width/10,
-    height: width/10,
-    backgroundColor: 'powderblue'
-  },
+  // cube: {
+  //   // marginLeft: 25,
+  //   marginTop: 10,
+  //   width: width/10,
+  //   height: width/10,
+  //   backgroundColor: 'powderblue'
+  // },
   image: {
-    height: 30,
-    width: 30
+    height: 60,
+    width: 60
+  },
+  list: {
+    flex: 1,
+    // height: height / 2,
+    // width: width,
+    // flexDirection: "row"
+    // borderColor: "red",
+    // borderWidth: 5,
+    // borderStyle: "solid"
+  },
+  container: {
+    width: width,
+    height: height,
+    flex: 1,
+    // flexDirection: "row"
+  },
+  eighty: {
+    width: (width/10)*8
+  },
+  tweenty: {
+    width: (width/10)*2
+  },
+  row: {
+    flexDirection: "column",
+    flex: 1,
+    height: 200,
+    borderColor: "red",
+    borderWidth: 5,
+    borderStyle: "solid"
+  },
+  block: {
+    // width: width,
+    // height: height / 10,
+    borderColor: "red",
+    borderWidth: 5,
+    borderStyle: "solid"
+  },
+  resultWrapper: {
+    // width: width/2
+  },
+  oddResult: {  
+    // flex: 
+    // justifyContent: "center",
+    backgroundColor: "#67B0D9",
+    flexDirection: 'row',
+    // justifyContent: 'center',
+    // alignItems: 'center',
+    // width: width/2,
+    padding: 5
+  },
+  evenResult: {
+    backgroundColor: "#CBF0E1",
+    flexDirection: 'row',
+    // flexDirection: 'column',
+    // justifyContent: 'center',
+    // alignItems: 'center',
+    // width: width/2,
+    padding: 5
   }
 });
 
+   
 export default class HomeScreen extends React.Component {
   constructor(props) {
     super(props);
@@ -68,6 +128,9 @@ export default class HomeScreen extends React.Component {
       this.setState({search: JSON.parse(response._bodyText)["results"]})
     })
   }
+  _onPressButton(result){
+    console.log("press", result);
+  }
   render() {
     console.log("width", width);
     console.log("height", height);
@@ -75,31 +138,38 @@ export default class HomeScreen extends React.Component {
     if (this.state.search) {
       console.log(this.state.search.length)
       searchResults = (
-        <View>
+        <ScrollView style={styles.list} automaticallyAdjustContentInsets={true}>
         {
           this.state.search.map((result, i) => {
-            console.log("here",result.artworkUrl30);
+            const className = (i%2 === 0) ? "oddResult" : "evenResult";
+            console.log(styles[className]);
             return (
-            <View key={i}>
-              <Image
-                style={styles.image}
-                source={result.artworkUrl30}
-              />
-              <Text>{result.collectionName}</Text>
-            </View>
+            <TouchableHighlight style={styles.resultWrapper} onPress={() => {this._onPressButton(result)}} key={i} >
+              <View style={styles[className]}>
+                <View style={styles.tweenty}>
+                <Image
+                  style={styles.image}
+                  source={{uri: result.artworkUrl60}}
+                />
+                <Text>{result.collectionName}</Text>
+                </View>
+                <View style={styles.eighty}>
+                  <Text>Test</Text>
+                </View>
+              </View>
+            </TouchableHighlight>
             )
           })
         }
-        </View>
+        </ScrollView>
       )
     }
     return(
-      <View>
-        <View>
+      <View style={styles.container}>
+        <View style={styles.block}>
           <TextInput 
             submit={this.submit} />
         </View>
-
         {
         // <Animated.Image                         // Base: Image, Text, View
         //           source={{uri: 'http://i.imgur.com/XMKOH81.jpg'}}
